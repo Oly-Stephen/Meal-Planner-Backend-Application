@@ -1,6 +1,9 @@
 package com.example.mealplanner.meal.planner.service;
 
+import com.example.mealplanner.meal.planner.dto.CategoryDto;
 import com.example.mealplanner.meal.planner.dto.ProductDto;
+import com.example.mealplanner.meal.planner.entity.Product;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -8,7 +11,9 @@ public interface ProductService {
 
     ProductDto createProduct(ProductDto productDto);
 
-    List<ProductDto> getAllProducts();
+//    List<ProductDto> getAllProducts();
+
+    Page<ProductDto> getAllProducts(int page, int pageSize);
 
     ProductDto getProductById(long id);
 
@@ -19,4 +24,8 @@ public interface ProductService {
     List<ProductDto> getProductsByCategory(Long categoryId);
 
     List<ProductDto> searchProducts(String query);
+
+    List<ProductDto> getAllCategoriesProducts();
+
+    List<ProductDto> getProductsByCategoryName();
 }

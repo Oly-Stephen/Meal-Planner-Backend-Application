@@ -8,8 +8,12 @@ import com.example.mealplanner.meal.planner.repository.CategoryRepository;
 import com.example.mealplanner.meal.planner.repository.ProductRepository;
 import com.example.mealplanner.meal.planner.service.ProductService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,9 @@ public class ProductServiceImpl implements ProductService {
         this.modelMapper = modelMapper;
     }
 
+
+
+
     @Override
     public ProductDto createProduct(ProductDto productDto) {
 
@@ -42,17 +49,30 @@ public class ProductServiceImpl implements ProductService {
         Product newProduct = productRepository.save(product);
 
         // Convert entity to DTO
-        ProductDto productDto1 = mapToDto(newProduct);
-        return productDto1;
+        ProductDto createdProductDto = mapToDto(newProduct);
+        return createdProductDto;
     }
+
+//    @Override
+//    public List<ProductDto> getAllProducts() {
+//
+//        List<Product> products = productRepository.findAll();
+//        return products.stream().map((product) -> modelMapper.map(product, ProductDto.class))
+//                .collect(Collectors.toList());
+//    }
 
     @Override
-    public List<ProductDto> getAllProducts() {
+    public Page<ProductDto> getAllProducts(int page, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
+        Page<Product> productPage = productRepository.findAll(pageRequest);
 
-        List<Product> products = productRepository.findAll();
-        return products.stream().map((product) -> modelMapper.map(product, ProductDto.class))
+        List<ProductDto> productDtos = productPage.getContent().stream()
+                .map(product -> modelMapper.map(product, ProductDto.class))
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(productDtos, pageRequest, productPage.getTotalElements());
     }
+
 
     @Override
     public ProductDto getProductById(long id) {
@@ -70,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", productDto.getCategoryId()));
 
         product.setName(productDto.getName());
-        product.setGrams(productDto.getGrams());
+        product.setGramms(productDto.getGramms());
         product.setProtein(productDto.getProtein());
         product.setFats(productDto.getFats());
         product.setCarbs(productDto.getCarbs());
@@ -111,6 +131,40 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ProductDto> getAllCategoriesProducts() {
+        List<Category> categories = categoryRepository.findAll();
+        List<ProductDto> allProducts = new ArrayList<>();
+
+        for (Category category : categories) {
+            List<ProductDto> productDtos = category.getProducts().stream()
+                    .map(this::mapToDto)
+                    .collect(Collectors.toList());
+            allProducts.addAll(productDtos);
+        }
+
+        return allProducts;
+    }
+
+//    @Override
+//    public void saveProduct(Product product) {
+//
+//    }
+
+    @Override
+    public List<ProductDto> getProductsByCategoryName() {
+        List<Category> categories = categoryRepository.findAll();
+        List<ProductDto> allProducts = new ArrayList<>();
+
+        for (Category category : categories) {
+            List<ProductDto> productDtos = category.getProducts().stream()
+                    .map(this::mapToDto)
+                    .collect(Collectors.toList());
+            allProducts.addAll(productDtos);
+        }
+
+        return allProducts;
+    }
 
     // Convert entity to DTO
     private ProductDto mapToDto(Product product){

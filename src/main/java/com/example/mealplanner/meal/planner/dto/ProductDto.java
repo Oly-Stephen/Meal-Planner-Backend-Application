@@ -6,18 +6,13 @@ import lombok.Data;
 public class ProductDto {
 
     private Long id;
-
     private String name;
-
-    private Long grams;
-
-    private Long protein;
-
-    private Long fats;
-
-    private Long carbs;
-
-    private Long calories;
-
+    private Long gramms;
+    private Double protein;
+    private Double fats;
+    private Double carbs;
+    private Double calories;
     private Long categoryId;
+    private Long mealTimeId;
+
 }

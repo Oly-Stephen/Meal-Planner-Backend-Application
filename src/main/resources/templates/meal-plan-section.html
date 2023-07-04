@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plan Section</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        select.form-control {
+            width: 100%;
+            height: 35px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        .form-text {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="form-group">
+    <label for="mealTime">Meal Time</label>
+    <select id="mealTime" name="mealTime.id" class="form-control">
+        <option value="">Select Existing Meal Time</option>
+        <option th:each="mealTime : ${mealTimes}" th:value="${mealTime.id}" th:text="${mealTime.name}"></option>
+    </select>
+    <small class="form-text">Or</small>
+    <h2>Create Meal Plan</h2>
+</div>
+
+<hr>
+
+<!-- Add the form for creating a new meal plan -->
+<form action="/products/meal-plan" method="post">
+    <div class="form-group">
+        <label for="mealPlanName">Meal Plan Name</label>
+        <input type="text" id="mealPlanName" name="mealTimeDto.name" class="form-control" required>
+    </div>
+    <!-- Add more fields for other details if needed -->
+
+    <button type="submit" class="btn btn-primary">Create Meal Plan</button>
+</form>
+
+</body>
+</html>
